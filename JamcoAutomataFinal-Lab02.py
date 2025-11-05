@@ -1,72 +1,73 @@
-class MachineAssignment:
+class FSMachine:
+    def __init__(self):
+        pass
 
-    def mealy_machine(self, sequence):
-        current_state = 0
-        path = [current_state]
-        result = []
+    def run_mealy(self, binary_input):
+        state = 0
+        state_history = [state]
+        output_seq = ""
 
-        for bit in sequence:
-            if bit not in ('0', '1'):
-                print("Invalid input detected.")
+        for bit in binary_input:
+            if bit not in {"0", "1"}:
+                print("Invalid character found. Please enter only 0 or 1.")
                 return
 
-            if current_state == 0:
-                if bit == '0':
-                    current_state = 1
-                    result.append('b')
-                else:
-                    current_state = 0
-                    result.append('b')
+            match state:
+                case 0:
+                    if bit == "0":
+                        state = 1
+                        output_seq += "b"
+                    else:
+                        state = 0
+                        output_seq += "b"
 
-            elif current_state == 1:
-                if bit == '0':
-                    current_state = 1
-                    result.append('b')
-                else:
-                    current_state = 2
-                    result.append('a')
+                case 1:
+                    if bit == "0":
+                        output_seq += "b"
+                    else:
+                        state = 2
+                        output_seq += "a"
 
-            elif current_state == 2:
-                if bit == '0':
-                    current_state = 1
-                    result.append('b')
-                else:
-                    current_state = 0
-                    result.append('b')
+                case 2:
+                    if bit == "0":
+                        state = 1
+                        output_seq += "b"
+                    else:
+                        state = 0
+                        output_seq += "b"
 
-            path.append(current_state)
+            state_history.append(state)
 
-        print("Visited States:", ' -> '.join(map(str, path)))
-        print("Output Sequence:", ''.join(result))
+        print(f"States Traversed: {' -> '.join(map(str, state_history))}")
+        print(f"Output Produced: {output_seq}")
 
-    def moore_machine(self, sequence):
-        current_state = 0
-        path = [current_state]
-        output_trace = ['b']  # initial output for state 0
+    def run_moore(self, binary_input):
+        state = 0
+        path = [state]
+        outputs = "b"  # initial output
 
-        for bit in sequence:
-            if bit not in ('0', '1'):
-                print("Invalid input detected.")
+        for bit in binary_input:
+            if bit not in {"0", "1"}:
+                print("Invalid character found. Please enter only 0 or 1.")
                 return
 
-            if current_state == 0:
-                current_state = 1 if bit == '0' else 0
-            elif current_state == 1:
-                current_state = 1 if bit == '0' else 2
-            elif current_state == 2:
-                current_state = 1 if bit == '0' else 0
+            if state == 0:
+                state = 1 if bit == "0" else 0
+            elif state == 1:
+                state = 1 if bit == "0" else 2
+            else:
+                state = 1 if bit == "0" else 0
 
-            path.append(current_state)
-            # all states produce 'b' output for now
-            output_trace.append('b')
+            path.append(state)
+            outputs += "b"
 
-        print("Visited States:", ' -> '.join(map(str, path)))
-        print("Output Sequence:", ''.join(output_trace))
+        print(f"States Traversed: {' -> '.join(map(str, path))}")
+        print(f"Output Produced: {outputs}")
 
 
 if __name__ == "__main__":
-    machine = MachineAssignment()
-    seq1 = input("Enter binary input for Mealy Machine: ")
-    machine.mealy_machine(seq1)
-    seq2 = input("Enter binary input for Moore Machine: ")
-    machine.moore_machine(seq2)
+    machine = FSMachine()
+    inp1 = input("Input for Mealy FSM: ")
+    machine.run_mealy(inp1)
+    inp2 = input("Input for Moore FSM: ")
+    machine.run_moore(inp2)
